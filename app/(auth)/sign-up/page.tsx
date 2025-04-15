@@ -23,6 +23,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { formSchema } from "@/lib/auth-schema";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+
 
 
 export default function SignUp() {
@@ -37,11 +40,32 @@ export default function SignUp() {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const { name,email,password}  = values;
+    const { data, error } = await authClient.signUp.email({
+      email,
+      password,
+      name,
+      callbackURL: "/sign-in",
+    },
+    {
+      onRequest: (ctx) => {
+        toast.message(`Creating your account...`, {
+          action: { label: "Cancel", onClick: () => ctx.abort() },
+        });
+      },
+      onSuccess: (ctx) => {
+        form.reset();
+        toast.success("Account created successfully!");
+      },
+      onError: (ctx) => {
+        toast.error(ctx.error.message);
+      },
+    });
     console.log(values);
   }
+
+
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
