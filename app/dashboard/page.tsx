@@ -39,6 +39,7 @@ export default async function DashboardPage() {
         <CardFooter className="flex flex-col items-center space-y-4">
           <p className="text-sm text-muted-foreground">
             you want to logged out?{" "}
+            </p>
             <form
               action={async () => {
                 "use server";
@@ -52,7 +53,7 @@ export default async function DashboardPage() {
                 Sign Out
               </Button>
             </form>
-          </p>
+
         </CardFooter>
       </Card>
     </div>
